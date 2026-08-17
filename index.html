@@ -97,15 +97,6 @@
       align-items: center;
       gap: 10px;
       justify-self: start;
-      overflow: hidden;
-      max-width: 0;
-      opacity: 0;
-      transition: max-width .4s ease, opacity .35s ease;
-    }
-
-    #main-nav.scrolled .nav-logo {
-      max-width: 260px;
-      opacity: 1;
     }
 
     .nav-logo img {
@@ -125,6 +116,15 @@
       letter-spacing: .03em;
       line-height: 1.3;
       white-space: nowrap;
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      transition: max-width .4s ease, opacity .35s ease;
+    }
+
+    #main-nav.scrolled .nav-logo-text {
+      max-width: 200px;
+      opacity: 1;
     }
 
     /* center column */
@@ -1034,6 +1034,8 @@
         justify-content: space-between;
         align-items: center;
       }
+
+      .nav-logo img { height: 36px; width: 36px; }
 
       .nav-links {
         display: none;
