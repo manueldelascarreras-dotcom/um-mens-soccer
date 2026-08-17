@@ -23,8 +23,8 @@ service cloud.firestore {
 
     // Admins: only admins can manage; owner can always bootstrap themselves
     match /admins/{email} {
-      allow read: if isAdmin() || request.auth.token.email == 'manudelascarreras@gmail.com';
-      allow create: if request.auth.token.email == 'manudelascarreras@gmail.com' || isAdmin();
+      allow read: if isAdmin() || request.auth.token.email == 'manueldelascarreras@gmail.com';
+      allow create: if request.auth.token.email == 'manueldelascarreras@gmail.com' || isAdmin();
       allow update, delete: if isAdmin();
     }
   }
