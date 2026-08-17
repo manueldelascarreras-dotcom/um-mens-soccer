@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donate — UM Men's Soccer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:  #1A3C2A;
+      --green-mid:   #22503A;
+      --green-light: #2D6B4E;
+      --copper:      #C4622D;
+      --copper-light:#D4784A;
+      --gold:        #C9A84C;
+      --cream:       #F5F0E6;
+      --cream-dark:  #EDE6D6;
+      --white:       #FFFFFF;
+      --text-dark:   #1A1A1A;
+      --text-mid:    #4A4A4A;
+      --text-muted:  #7A7A7A;
+      --border:      #DDD5C4;
+      --font-heading: 'EB Garamond', Georgia, serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --radius-md:   12px;
+      --radius-lg:   20px;
+      --shadow-md:   0 6px 24px rgba(0,0,0,.12);
+      --shadow-lg:   0 16px 48px rgba(0,0,0,.18);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cream-dark);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { text-decoration: none; color: inherit; }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(175deg, #0E1F16 0%, #1A3C2A 60%, #22503A 100%);
+      padding: 36px 24px 52px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,.02) 80px),
+        repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,.02) 80px);
+      pointer-events: none;
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 56px;
+      background: var(--cream-dark);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .header-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 44px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(245,240,230,.6);
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+
+    .back-btn:hover { color: var(--gold); }
+
+    .header-logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: white;
+      box-shadow: 0 0 0 2px rgba(201,168,76,.4), 0 4px 16px rgba(0,0,0,.3);
+    }
+
+    .header-body {
+      position: relative;
+      z-index: 1;
+      padding-bottom: 12px;
+    }
+
+    .header-eyebrow {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .header-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      color: var(--cream);
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    .header-subtitle {
+      font-family: var(--font-heading);
+      font-size: clamp(.9rem, 2vw, 1.15rem);
+      font-style: italic;
+      color: rgba(245,240,230,.5);
+    }
+
+    /* ── Main content ── */
+    .donate-page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 52px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* thank you card */
+    .thank-you-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 44px 40px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      width: 100%;
+    }
+
+    .thank-you-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--green-dark), var(--green-light));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .thank-you-icon svg {
+      width: 30px;
+      height: 30px;
+      color: var(--gold);
+    }
+
+    .thank-you-card h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .thank-you-card p {
+      font-size: .975rem;
+      color: var(--text-mid);
+      line-height: 1.75;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* instruction image */
+    .instructions-wrap {
+      width: 100%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .instructions-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* donate button */
+    .donate-action {
+      text-align: center;
+      width: 100%;
+    }
+
+    .donate-action p {
+      font-size: .875rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .btn-donate {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 48px;
+      background: var(--copper);
+      color: var(--white);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 6px 20px rgba(196,98,45,.4);
+    }
+
+    .btn-donate:hover {
+      background: var(--copper-light);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(196,98,45,.5);
+    }
+
+    .btn-donate svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .disclaimer {
+      font-size: .75rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      .thank-you-card { padding: 32px 24px; }
+      .donate-page { padding: 40px 16px 72px; gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="header-top">
+      <a href="index.html" class="back-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Home
+      </a>
+      <img src="logo.png" alt="UM Men's Soccer" class="header-logo" />
+    </div>
+    <div class="header-body">
+      <p class="header-eyebrow">Support the Canes</p>
+      <h1 class="header-title">Make a Difference</h1>
+      <p class="header-subtitle">Every contribution helps us compete at the highest level.</p>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="donate-page">
+
+    <!-- Thank you message -->
+    <div class="thank-you-card">
+      <div class="thank-you-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <h2>Thank You from the UM Soccer Team</h2>
+      <p>Your support means everything to us. Whether you're a family member, a friend, a fellow Cane, or someone who just believes in what we do — we are deeply grateful. You make it possible for us to represent the University of Miami with pride on every pitch.</p>
+    </div>
+
+    <!-- Instruction image -->
+    <div class="instructions-wrap">
+      <img src="donate-instructions.png" alt="Donation instructions for UM Men's Soccer" />
+    </div>
+
+    <!-- Donate button -->
+    <div class="donate-action">
+      <p>Click below to be taken directly to the University of Miami Club Sports donation portal.<br>Follow the steps in the image above to complete your gift.</p>
+      <a
+        href="https://wellness.studentaffairs.miami.edu/recreational-sports/club-sports/index.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-donate"
+        aria-label="Donate to UM Men's Soccer via the Club Sports portal"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Donate Now
+      </a>
+    </div>
+
+    <p class="disclaimer">You will be redirected to the University of Miami Club Sports portal.<br>In the fund/area name field, write <strong>"Men's Soccer Club."</strong></p>
+
+  </main>
+
+</body>
+</html>

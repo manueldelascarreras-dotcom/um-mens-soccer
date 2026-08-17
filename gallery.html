@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery — UM Men's Soccer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --green-dark:  #1A3C2A;
+      --green-mid:   #22503A;
+      --copper:      #C4622D;
+      --gold:        #C9A84C;
+      --cream:       #F5F0E6;
+      --cream-dark:  #EDE6D6;
+      --white:       #FFFFFF;
+      --text-dark:   #1A1A1A;
+      --text-muted:  #7A7A7A;
+      --border:      #DDD5C4;
+      --font-heading: 'EB Garamond', Georgia, serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --radius-md:   12px;
+      --shadow-md:   0 6px 24px rgba(0,0,0,.12);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cream-dark);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(175deg, #12291C 0%, #1A3C2A 100%);
+      padding: 32px 24px 36px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(245,240,230,.7);
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+
+    .back-btn:hover { color: var(--gold); }
+
+    .header-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: white;
+      margin-left: auto;
+      box-shadow: 0 0 0 2px rgba(201,168,76,.4);
+    }
+
+    .header-text { flex: 1; }
+
+    .header-text h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.2;
+    }
+
+    .header-text p {
+      font-size: .8rem;
+      color: rgba(245,240,230,.5);
+      margin-top: 4px;
+      letter-spacing: .05em;
+    }
+
+    /* ── Grid ── */
+    .gallery-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .photo-item {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: zoom-in;
+      background: var(--green-dark);
+      aspect-ratio: 4/3;
+      box-shadow: 0 2px 10px rgba(0,0,0,.1);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .photo-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .35s ease;
+    }
+
+    .photo-item:hover img { transform: scale(1.05); }
+
+    .photo-num {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      font-size: .7rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.7);
+      letter-spacing: .08em;
+      background: rgba(0,0,0,.4);
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+
+    /* ── Lightbox ── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0,0,0,.94);
+      align-items: center;
+      justify-content: center;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox img {
+      max-width: 92vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.6);
+    }
+
+    .lb-btn {
+      position: fixed;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      border: 1.5px solid rgba(255,255,255,.25);
+      color: #fff;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+    }
+
+    #lb-close { top: 20px; left: 20px; }
+    #lb-prev  { top: 50%; left: 20px;  transform: translateY(-50%); }
+    #lb-next  { top: 50%; right: 20px; transform: translateY(-50%); }
+
+    #lb-close:hover { background: rgba(255,255,255,.25); transform: scale(1.1); }
+    #lb-prev:hover  { background: rgba(255,255,255,.25); transform: translateY(-50%) scale(1.1); }
+    #lb-next:hover  { background: rgba(255,255,255,.25); transform: translateY(-50%) scale(1.1); }
+
+    #lb-prev:disabled,
+    #lb-next:disabled { opacity: .25; cursor: default; }
+
+    #lb-counter {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,.6);
+      font-size: .8rem;
+      letter-spacing: .1em;
+    }
+
+    @media (max-width: 600px) {
+      .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .gallery-page { padding: 32px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div>
+      <a href="index.html" class="back-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Home
+      </a>
+      <div class="header-text" style="margin-top:12px">
+        <h1>Photo Gallery</h1>
+        <p>University of Miami Men's Soccer — 13 Photos</p>
+      </div>
+    </div>
+    <img src="logo.png" alt="UM Men's Soccer" class="header-logo" />
+  </header>
+
+  <!-- GRID -->
+  <main class="gallery-page">
+    <div class="photo-grid" id="photoGrid">
+
+      <div class="photo-item" data-index="0">
+        <img src="DSC01553.jpg" alt="UM Men's Soccer — Photo 1" loading="lazy" />
+        <span class="photo-num">01</span>
+      </div>
+
+      <div class="photo-item" data-index="1">
+        <img src="DSC01564.jpg" alt="UM Men's Soccer — Photo 2" loading="lazy" />
+        <span class="photo-num">02</span>
+      </div>
+
+      <div class="photo-item" data-index="2">
+        <img src="DSC01575.jpg" alt="UM Men's Soccer — Photo 3" loading="lazy" />
+        <span class="photo-num">03</span>
+      </div>
+
+      <div class="photo-item" data-index="3">
+        <img src="DSC01577.jpg" alt="UM Men's Soccer — Photo 4" loading="lazy" />
+        <span class="photo-num">04</span>
+      </div>
+
+      <div class="photo-item" data-index="4">
+        <img src="DSC01580.jpg" alt="UM Men's Soccer — Photo 5" loading="lazy" />
+        <span class="photo-num">05</span>
+      </div>
+
+      <div class="photo-item" data-index="5">
+        <img src="DSC01582.jpg" alt="UM Men's Soccer — Photo 6" loading="lazy" />
+        <span class="photo-num">06</span>
+      </div>
+
+      <div class="photo-item" data-index="6">
+        <img src="DSC01583.jpg" alt="UM Men's Soccer — Photo 7" loading="lazy" />
+        <span class="photo-num">07</span>
+      </div>
+
+      <div class="photo-item" data-index="7">
+        <img src="DSC01588.jpg" alt="UM Men's Soccer — Photo 8" loading="lazy" />
+        <span class="photo-num">08</span>
+      </div>
+
+      <div class="photo-item" data-index="8">
+        <img src="DSC01593.jpg" alt="UM Men's Soccer — Photo 9" loading="lazy" />
+        <span class="photo-num">09</span>
+      </div>
+
+      <div class="photo-item" data-index="9">
+        <img src="DSC01608.jpg" alt="UM Men's Soccer — Photo 10" loading="lazy" />
+        <span class="photo-num">10</span>
+      </div>
+
+      <div class="photo-item" data-index="10">
+        <img src="DSC01612.jpg" alt="UM Men's Soccer — Photo 11" loading="lazy" />
+        <span class="photo-num">11</span>
+      </div>
+
+      <div class="photo-item" data-index="11">
+        <img src="DSC01617.jpg" alt="UM Men's Soccer — Photo 12" loading="lazy" />
+        <span class="photo-num">12</span>
+      </div>
+
+      <div class="photo-item" data-index="12">
+        <img src="DSC01629.jpg" alt="UM Men's Soccer — Photo 13" loading="lazy" />
+        <span class="photo-num">13</span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="lb-btn" id="lb-close" aria-label="Close">&#x2715;</button>
+    <button class="lb-btn" id="lb-prev"  aria-label="Previous photo">&#8592;</button>
+    <img id="lb-img" src="" alt="" />
+    <button class="lb-btn" id="lb-next"  aria-label="Next photo">&#8594;</button>
+    <div id="lb-counter"></div>
+  </div>
+
+  <script>
+    const PHOTOS = [
+      'DSC01553.jpg','DSC01564.jpg','DSC01575.jpg','DSC01577.jpg',
+      'DSC01580.jpg','DSC01582.jpg','DSC01583.jpg','DSC01588.jpg',
+      'DSC01593.jpg','DSC01608.jpg','DSC01612.jpg','DSC01617.jpg','DSC01629.jpg'
+    ];
+
+    const lb      = document.getElementById('lightbox');
+    const lbImg   = document.getElementById('lb-img');
+    const lbClose = document.getElementById('lb-close');
+    const lbPrev  = document.getElementById('lb-prev');
+    const lbNext  = document.getElementById('lb-next');
+    const lbCount = document.getElementById('lb-counter');
+    let current   = 0;
+
+    function show(idx) {
+      current = idx;
+      lbImg.src         = PHOTOS[current];
+      lbImg.alt         = 'UM Men\'s Soccer — Photo ' + (current + 1);
+      lbCount.textContent = (current + 1) + ' / ' + PHOTOS.length;
+      lbPrev.disabled   = current === 0;
+      lbNext.disabled   = current === PHOTOS.length - 1;
+    }
+
+    function open(idx) {
+      show(idx);
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+      lbImg.src = '';
+    }
+
+    lbClose.addEventListener('click', close);
+    lbPrev.addEventListener('click',  () => { if (current > 0) show(current - 1); });
+    lbNext.addEventListener('click',  () => { if (current < PHOTOS.length - 1) show(current + 1); });
+    lb.addEventListener('click', e => { if (e.target === lb || e.target === lbImg) close(); });
+
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape')     close();
+      if (e.key === 'ArrowLeft'  && current > 0)                   show(current - 1);
+      if (e.key === 'ArrowRight' && current < PHOTOS.length - 1)   show(current + 1);
+    });
+
+    document.getElementById('photoGrid').addEventListener('click', e => {
+      const item = e.target.closest('.photo-item');
+      if (item) open(Number(item.dataset.index));
+    });
+  </script>
+
+</body>
+</html>

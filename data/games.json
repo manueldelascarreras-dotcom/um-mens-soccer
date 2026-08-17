@@ -1,0 +1,7 @@
+[
+  { "id": "1", "date": "Friday, Sept 19", "time": "12:00 PM", "location": "away", "opponent": "FAU Owls", "logo": "FAU.png" },
+  { "id": "2", "date": "Saturday, Sept 20", "time": "12:00 PM", "location": "away", "opponent": "FIU Panthers", "logo": "FIU.png" },
+  { "id": "3", "date": "Friday, Oct 3", "time": "12:00 PM", "location": "home", "opponent": "FGCU Eagles", "logo": "FGCU.png" },
+  { "id": "4", "date": "Saturday, Oct 11", "time": "2:00 PM", "location": "away", "opponent": "UCF Knights", "logo": "UCF.png" },
+  { "id": "5", "date": "Friday, Oct 17", "time": "11:00 AM", "location": "home", "opponent": "NSU Sharks", "logo": "NSU.png" }
+]

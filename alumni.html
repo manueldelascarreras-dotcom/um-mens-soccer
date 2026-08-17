@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alumni — UM Men's Soccer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --green-dark:  #1A3C2A;
+      --green-mid:   #22503A;
+      --green-light: #2D6B4E;
+      --copper:      #C4622D;
+      --gold:        #C9A84C;
+      --cream:       #F5F0E6;
+      --cream-dark:  #EDE6D6;
+      --white:       #FFFFFF;
+      --text-dark:   #1A1A1A;
+      --text-mid:    #4A4A4A;
+      --text-muted:  #7A7A7A;
+      --border:      #DDD5C4;
+      --font-heading: 'EB Garamond', Georgia, serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+      --radius-md:   12px;
+      --shadow-sm:   0 2px 8px rgba(0,0,0,.08);
+      --shadow-md:   0 6px 24px rgba(0,0,0,.12);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cream-dark);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(175deg, #0E1F16 0%, #1A3C2A 60%, #22503A 100%);
+      padding: 40px 24px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,.02) 80px),
+        repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,.02) 80px);
+      pointer-events: none;
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: var(--cream-dark);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .header-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(245,240,230,.6);
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+
+    .back-btn:hover { color: var(--gold); }
+
+    .header-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: white;
+      box-shadow: 0 0 0 2px rgba(201,168,76,.4), 0 4px 16px rgba(0,0,0,.3);
+    }
+
+    .header-body {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding-bottom: 16px;
+    }
+
+    .header-eyebrow {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .header-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .header-subtitle {
+      font-family: var(--font-heading);
+      font-size: clamp(.95rem, 2.2vw, 1.2rem);
+      font-style: italic;
+      color: rgba(245,240,230,.5);
+    }
+
+    /* ── Content ── */
+    .alumni-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 24px 100px;
+    }
+
+    .alumni-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .alumni-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .alumni-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .alumni-avatar {
+      flex-shrink: 0;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-dark), var(--green-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--cream);
+    }
+
+    .alumni-avatar.placeholder {
+      background: transparent;
+      border: 1.5px dashed var(--border);
+      color: var(--text-muted);
+    }
+
+    .alumni-info { flex: 1; min-width: 0; }
+
+    .alumni-name {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 2px;
+    }
+
+    .alumni-year {
+      font-size: .73rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
+
+    .alumni-pos {
+      font-size: .78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .alumni-card.placeholder {
+      border-style: dashed;
+      background: transparent;
+      opacity: .55;
+    }
+
+    /* add banner */
+    .add-notice {
+      margin-top: 40px;
+      text-align: center;
+      font-size: .85rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      .alumni-grid { grid-template-columns: 1fr; }
+      .alumni-page { padding: 40px 16px 72px; }
+      .header-top { margin-bottom: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="header-top">
+      <a href="index.html" class="back-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Home
+      </a>
+      <img src="logo.png" alt="UM Men's Soccer" class="header-logo" />
+    </div>
+    <div class="header-body">
+      <p class="header-eyebrow">University of Miami Men's Soccer</p>
+      <h1 class="header-title">Those Who Set the Way</h1>
+      <p class="header-subtitle">The ones who built this club before us — we play in their honor.</p>
+    </div>
+  </header>
+
+  <!-- ALUMNI GRID -->
+  <main class="alumni-page">
+    <div class="alumni-grid">
+
+      <!-- Add real alumni here — example format:
+      <div class="alumni-card">
+        <div class="alumni-avatar">JD</div>
+        <div class="alumni-info">
+          <div class="alumni-name">John Doe</div>
+          <div class="alumni-year">Class of 2022</div>
+          <div class="alumni-pos">Midfielder</div>
+        </div>
+      </div>
+      -->
+
+      <div class="alumni-card placeholder">
+        <div class="alumni-avatar placeholder">—</div>
+        <div class="alumni-info">
+          <div class="alumni-name">Alumni Name</div>
+          <div class="alumni-year">Class of —</div>
+        </div>
+      </div>
+
+      <div class="alumni-card placeholder">
+        <div class="alumni-avatar placeholder">—</div>
+        <div class="alumni-info">
+          <div class="alumni-name">Alumni Name</div>
+          <div class="alumni-year">Class of —</div>
+        </div>
+      </div>
+
+      <div class="alumni-card placeholder">
+        <div class="alumni-avatar placeholder">—</div>
+        <div class="alumni-info">
+          <div class="alumni-name">Alumni Name</div>
+          <div class="alumni-year">Class of —</div>
+        </div>
+      </div>
+
+      <div class="alumni-card placeholder">
+        <div class="alumni-avatar placeholder">—</div>
+        <div class="alumni-info">
+          <div class="alumni-name">Alumni Name</div>
+          <div class="alumni-year">Class of —</div>
+        </div>
+      </div>
+
+    </div>
+    <p class="add-notice">More names to be added — reach out to the e-board to be included.</p>
+  </main>
+
+</body>
+</html>

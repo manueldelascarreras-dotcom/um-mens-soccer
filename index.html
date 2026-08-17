@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University of Miami Men's Soccer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --green-dark:   #1A3C2A;
+      --green-mid:    #22503A;
+      --green-light:  #2D6B4E;
+      --copper:       #C4622D;
+      --copper-light: #D4784A;
+      --gold:         #C9A84C;
+      --cream:        #F5F0E6;
+      --cream-dark:   #EDE6D6;
+      --white:        #FFFFFF;
+      --text-dark:    #1A1A1A;
+      --text-mid:     #4A4A4A;
+      --text-muted:   #7A7A7A;
+      --border:       #DDD5C4;
+
+      --font-heading: 'EB Garamond', Georgia, serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+
+      --radius-sm:  6px;
+      --radius-md:  12px;
+      --radius-lg:  20px;
+      --shadow-sm:  0 2px 8px rgba(0,0,0,.08);
+      --shadow-md:  0 6px 24px rgba(0,0,0,.12);
+      --shadow-lg:  0 16px 48px rgba(0,0,0,.18);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--text-dark);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+
+    /* ─── NAV ──────────────────────────────────────── */
+    #main-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 40px;
+      height: 76px;
+      background: rgba(26, 60, 42, 0);
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+      border-bottom: 1px solid rgba(255,255,255,0);
+      transition: height .35s ease, background .35s ease, backdrop-filter .35s ease, border-color .35s ease, box-shadow .35s ease;
+    }
+
+    #main-nav.scrolled {
+      height: 68px;
+      background: rgba(18, 41, 28, 0.97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 4px 32px rgba(0,0,0,.28);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-self: start;
+      overflow: hidden;
+      max-width: 0;
+      opacity: 0;
+      transition: max-width .4s ease, opacity .35s ease;
+    }
+
+    #main-nav.scrolled .nav-logo {
+      max-width: 260px;
+      opacity: 1;
+    }
+
+    .nav-logo img {
+      flex-shrink: 0;
+      height: 42px;
+      width: 42px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: white;
+      box-shadow: 0 0 0 2px rgba(201,168,76,.5), 0 2px 10px rgba(0,0,0,.3);
+    }
+
+    .nav-logo-text {
+      font-family: var(--font-heading);
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--cream);
+      letter-spacing: .03em;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    /* center column */
+    .nav-links {
+      justify-self: center;
+    }
+
+    /* right column — donate */
+    .nav-right {
+      justify-self: end;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: .8125rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(245,240,230,.75);
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      padding: 9px 22px;
+      background: var(--copper);
+      color: var(--white) !important;
+      border-radius: var(--radius-sm);
+      font-size: .8125rem !important;
+      font-weight: 600 !important;
+      letter-spacing: .08em !important;
+      text-transform: uppercase !important;
+      transition: background .2s, transform .15s !important;
+    }
+
+    .nav-cta:hover { background: var(--copper-light) !important; transform: translateY(-1px); }
+
+    /* ─── HERO ─────────────────────────────────────── */
+    #home {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 140px;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 30%, rgba(196,98,45,.18) 0%, transparent 65%),
+        linear-gradient(175deg, #12291C 0%, #1A3C2A 40%, #22503A 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #home::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,.03) 80px),
+        repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,.03) 80px);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-body);
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+
+    .hero-logo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: white;
+      margin: 0 auto 36px;
+      box-shadow:
+        0 0 0 3px rgba(255,255,255,.15),
+        0 0 0 6px rgba(201,168,76,.4),
+        0 0 0 7px rgba(201,168,76,.1),
+        0 24px 64px rgba(0,0,0,.5);
+      animation: fadeUp .8s ease both;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.1;
+      letter-spacing: -.01em;
+      max-width: 780px;
+      margin: 0 auto 20px;
+      animation: fadeUp .8s .12s ease both;
+    }
+
+    .hero-tagline {
+      font-family: var(--font-heading);
+      font-size: clamp(1rem, 2.5vw, 1.375rem);
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(245,240,230,.6);
+      margin-bottom: 48px;
+      animation: fadeUp .8s .22s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp .8s .32s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--copper);
+      color: var(--white);
+      border-radius: var(--radius-sm);
+      font-size: .875rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(196,98,45,.35);
+    }
+
+    .btn-primary:hover {
+      background: var(--copper-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(196,98,45,.45);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--cream);
+      border: 1.5px solid rgba(245,240,230,.35);
+      border-radius: var(--radius-sm);
+      font-size: .875rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: border-color .2s, color .2s, transform .15s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .hero-divider {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 80px;
+      background: var(--cream);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    /* ─── SECTION SHELL ────────────────────────────── */
+    section {
+      padding: 100px 24px;
+    }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: var(--green-dark);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 1rem;
+      color: var(--text-mid);
+      max-width: 540px;
+      line-height: 1.7;
+    }
+
+    .section-header {
+      margin-bottom: 56px;
+    }
+
+    /* ─── SCHEDULE ─────────────────────────────────── */
+    #schedule { background: var(--cream); }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .match-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      transition: transform .2s, box-shadow .2s, background .2s, border-color .2s;
+      cursor: default;
+    }
+
+    .match-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      background: #e8f2ec;
+      border-color: rgba(26, 60, 42, 0.25);
+    }
+
+    /* top row: date + tag */
+    .match-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .match-date-block .match-date {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      line-height: 1.2;
+    }
+
+    .match-date-block .match-time {
+      font-size: .78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .match-tag {
+      display: inline-block;
+      padding: 3px 12px;
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      border-radius: 99px;
+      background: rgba(196,98,45,.1);
+      color: var(--copper);
+    }
+
+    .match-tag.away {
+      background: rgba(26,60,42,.08);
+      color: var(--green-dark);
+    }
+
+    /* vs row */
+    .match-vs-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .match-team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .match-team-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    }
+
+    .match-team-badge {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.18);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .match-team-name {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .match-vs-label {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--border);
+      flex-shrink: 0;
+    }
+
+    /* ─── PLAYERS ──────────────────────────────────── */
+    #team { background: var(--cream-dark); }
+
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 24px;
+    }
+
+    .player-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px 24px 24px;
+      text-align: center;
+      transition: transform .2s, box-shadow .2s;
+      cursor: default;
+    }
+
+    .player-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .player-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-dark), var(--green-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cream);
+      position: relative;
+    }
+
+    .player-number {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 24px;
+      height: 24px;
+      background: var(--copper);
+      color: var(--white);
+      border-radius: 50%;
+      font-family: var(--font-body);
+      font-size: .6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .player-name {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 4px;
+    }
+
+    .player-position {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ─── DONATE ───────────────────────────────────── */
+    #donate {
+      background: linear-gradient(135deg, var(--green-dark) 0%, #152E20 100%);
+      padding: 100px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #donate::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,.12), transparent);
+      pointer-events: none;
+    }
+
+    .donate-inner { position: relative; z-index: 1; }
+
+    .donate-label {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .donate-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .donate-copy {
+      font-size: 1.05rem;
+      color: rgba(245,240,230,.65);
+      max-width: 520px;
+      margin: 0 auto 44px;
+      line-height: 1.75;
+    }
+
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 42px;
+      background: var(--gold);
+      color: var(--green-dark);
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(201,168,76,.35);
+    }
+
+    .btn-gold:hover {
+      background: #D4B567;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201,168,76,.5);
+    }
+
+    /* ─── CONTACT ─────────────────────────────────── */
+    #contact { background: var(--cream); }
+
+    .eboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .eboard-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 28px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: transform .2s, box-shadow .2s, background .2s, border-color .2s;
+    }
+
+    .eboard-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      background: #e8f2ec;
+      border-color: rgba(26, 60, 42, 0.25);
+    }
+
+    .eboard-avatar {
+      flex-shrink: 0;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-dark), var(--green-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--cream);
+    }
+
+    .eboard-info { flex: 1; min-width: 0; }
+
+    .eboard-name {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 2px;
+    }
+
+    .eboard-role {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 10px;
+    }
+
+    .eboard-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .8rem;
+      color: var(--text-mid);
+      transition: color .2s;
+      word-break: break-all;
+    }
+
+    .eboard-email:hover { color: var(--green-dark); }
+
+    .eboard-email svg {
+      flex-shrink: 0;
+      width: 13px;
+      height: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ─── GALLERY ──────────────────────────────────── */
+    #gallery { background: var(--cream-dark); }
+
+    .carousel-wrap {
+      position: relative;
+      width: 100%;
+      padding: 0 48px;
+    }
+
+    .carousel-overflow {
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .carousel-track {
+      display: flex;
+      will-change: transform;
+    }
+
+    .carousel-slide {
+      flex-shrink: 0;
+      padding: 0 10px;
+    }
+
+    .gallery-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      height: 260px;
+      background: var(--green-dark);
+    }
+
+    .gallery-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s ease;
+    }
+
+    .gallery-card:hover img { transform: scale(1.06); }
+
+    .gallery-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      align-items: flex-end;
+      transform: translateY(100%);
+      transition: transform .35s ease;
+      font-size: .85rem;
+      line-height: 1.5;
+    }
+
+    .gallery-card:hover .gallery-card-overlay { transform: translateY(0); }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(26,60,42,.85);
+      color: var(--cream);
+      border: 1.5px solid rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .carousel-btn:hover { background: var(--green-mid); transform: translateY(-50%) scale(1.08); }
+    .carousel-btn:disabled { opacity: .35; cursor: default; }
+    .carousel-btn.prev { left: 0; }
+    .carousel-btn.next { right: 0; }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .carousel-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background .2s, transform .2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .carousel-dot.active {
+      background: var(--copper);
+      transform: scale(1.3);
+    }
+
+    @media (max-width: 768px) {
+      .carousel-wrap { padding: 0 40px; }
+      .gallery-card { height: 200px; }
+    }
+
+    @media (max-width: 480px) {
+      .carousel-wrap { padding: 0 36px; }
+      .gallery-card { height: 180px; }
+    }
+
+    /* ─── LIGHTBOX ─────────────────────────────────── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0,0,0,.92);
+      align-items: center;
+      justify-content: center;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox img {
+      max-width: 92vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      box-shadow: 0 24px 80px rgba(0,0,0,.6);
+      display: block;
+    }
+
+    #lightbox-close,
+    #lightbox-prev,
+    #lightbox-next {
+      position: fixed;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      border: 1.5px solid rgba(255,255,255,.25);
+      color: #fff;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      line-height: 1;
+    }
+
+    #lightbox-close  { top: 20px; left: 20px; }
+    #lightbox-prev   { top: 50%; left: 20px;  transform: translateY(-50%); }
+    #lightbox-next   { top: 50%; right: 20px; transform: translateY(-50%); }
+
+    #lightbox-close:hover { background: rgba(255,255,255,.25); transform: scale(1.1); }
+    #lightbox-prev:hover  { background: rgba(255,255,255,.25); transform: translateY(-50%) scale(1.1); }
+    #lightbox-next:hover  { background: rgba(255,255,255,.25); transform: translateY(-50%) scale(1.1); }
+
+    #lightbox-prev:disabled,
+    #lightbox-next:disabled { opacity: .25; cursor: default; }
+
+    #lightbox-counter {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,.6);
+      font-size: .8rem;
+      font-family: var(--font-body, sans-serif);
+      letter-spacing: .1em;
+    }
+
+    .gallery-card { cursor: zoom-in; }
+
+    .gallery-view-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 36px;
+      padding: 12px 28px;
+      background: var(--green-dark);
+      color: var(--cream);
+      border-radius: var(--radius-sm);
+      font-size: .8125rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: background .2s, transform .15s;
+    }
+
+    .gallery-view-all:hover {
+      background: var(--green-mid);
+      transform: translateY(-2px);
+    }
+
+    /* ─── INSTAGRAM ────────────────────────────────── */
+    #social {
+      background: var(--cream-dark);
+      text-align: center;
+    }
+
+    .instagram-card {
+      max-width: 520px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 56px 40px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ig-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ig-icon svg {
+      width: 32px;
+      height: 32px;
+      color: white;
+    }
+
+    .ig-handle {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 12px;
+    }
+
+    .ig-copy {
+      font-size: .925rem;
+      color: var(--text-mid);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .btn-ig {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #e6683c, #dc2743, #bc1888);
+      color: var(--white);
+      border-radius: var(--radius-sm);
+      font-size: .875rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      transition: opacity .2s, transform .15s;
+    }
+
+    .btn-ig:hover {
+      opacity: .9;
+      transform: translateY(-2px);
+    }
+
+    /* ─── FOOTER ───────────────────────────────────── */
+    footer {
+      background: var(--green-dark);
+      padding: 48px 24px 36px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .footer-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .footer-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .footer-logo-row img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      opacity: .9;
+    }
+
+    .footer-brand {
+      font-family: var(--font-heading);
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--cream);
+      letter-spacing: .04em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      font-size: .78rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(245,240,230,.5);
+      transition: color .2s;
+    }
+
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-copy {
+      font-size: .75rem;
+      color: rgba(245,240,230,.35);
+      letter-spacing: .04em;
+    }
+
+    /* ─── ANIMATIONS ───────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ───────────────────────────────── */
+    @media (max-width: 768px) {
+      #main-nav {
+        padding: 0 20px;
+        height: 64px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      #home { padding: 96px 20px 72px; }
+
+      .hero-logo { width: 140px; height: 140px; }
+
+      section { padding: 72px 20px; }
+
+      .schedule-grid { grid-template-columns: 1fr; }
+
+      .players-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .eboard-grid { grid-template-columns: 1fr; }
+
+      .instagram-card { padding: 40px 24px; }
+
+      footer { padding: 40px 20px 28px; }
+    }
+
+    @media (max-width: 480px) {
+      .players-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-actions { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button id="lightbox-close" aria-label="Close">&#x2715;</button>
+    <button id="lightbox-prev" aria-label="Previous photo">&#8592;</button>
+    <img id="lightbox-img" src="" alt="" />
+    <button id="lightbox-next" aria-label="Next photo">&#8594;</button>
+    <div id="lightbox-counter"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav id="main-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-logo">
+      <img src="logo.png" alt="University of Miami Men's Soccer Logo" />
+      <span class="nav-logo-text">UM Men's Soccer</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="donate.html" class="nav-cta">Donate</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home" aria-label="Hero">
+    <p class="hero-eyebrow">Est. — University of Miami</p>
+    <img src="logo.png" alt="University of Miami Men's Soccer" class="hero-logo" />
+    <h1 class="hero-title">University of Miami<br>Men's Soccer</h1>
+    <p class="hero-tagline">Excellence on Every Pitch</p>
+    <div class="hero-actions">
+      <a href="#schedule" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        View Schedule
+      </a>
+      <a href="#team" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Meet the Team
+      </a>
+    </div>
+    <div class="hero-divider" aria-hidden="true"></div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section id="schedule" aria-labelledby="schedule-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">2025 Season</p>
+        <h2 class="section-title" id="schedule-heading">Game Schedule</h2>
+        <p class="section-subtitle">Follow the Canes as we compete across South Florida and beyond.</p>
+      </div>
+      <div class="schedule-grid" id="scheduleGrid"></div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team" aria-labelledby="team-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">The Club</p>
+        <h2 class="section-title" id="team-heading">Meet the Team</h2>
+        <p class="section-subtitle">The men who wear the green and orange with pride every single match.</p>
+      </div>
+      <div class="players-grid" id="playersGrid"></div>
+    </div>
+  </section>
+
+  <!-- DONATE -->
+  <section id="donate" aria-labelledby="donate-heading">
+    <div class="container donate-inner">
+      <p class="donate-label">Make a Difference</p>
+      <h2 class="donate-title" id="donate-heading">Support the Canes</h2>
+      <p class="donate-copy">Your generosity directly funds travel, equipment, training resources, and scholarships that help our student-athletes compete at the highest level. Every contribution drives us forward.</p>
+      <a href="donate.html" class="btn-gold" aria-label="Donate to University of Miami Men's Soccer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Donate Now
+      </a>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" aria-labelledby="gallery-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Photos</p>
+        <h2 class="section-title" id="gallery-heading">Gallery</h2>
+        <p class="section-subtitle">Moments from the pitch, the sideline, and beyond.</p>
+      </div>
+
+      <div class="carousel-wrap">
+        <button class="carousel-btn prev" id="galleryPrev" aria-label="Previous photos">&#8592;</button>
+        <div class="carousel-overflow">
+          <div class="carousel-track" id="galleryTrack">
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01553.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01564.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01575.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01577.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01580.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01582.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01583.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01588.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01593.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01608.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01612.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01617.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+            <div class="carousel-slide">
+              <div class="gallery-card">
+                <img src="DSC01629.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <button class="carousel-btn next" id="galleryNext" aria-label="Next photos">&#8594;</button>
+      </div>
+
+      <div class="carousel-dots" id="galleryDots"></div>
+      <div style="text-align:center">
+        <a href="gallery.html" class="gallery-view-all">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          View All Photos
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT / E-BOARD -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Get in Touch</p>
+        <h2 class="section-title" id="contact-heading">Executive Board</h2>
+        <p class="section-subtitle">Reach out to any of our e-board members for questions about the club, membership, or upcoming events.</p>
+      </div>
+      <div class="eboard-grid">
+
+        <div class="eboard-card">
+          <div class="eboard-avatar" aria-hidden="true">SN</div>
+          <div class="eboard-info">
+            <div class="eboard-name">Sebastian Navarro</div>
+            <div class="eboard-role">President</div>
+            <a href="mailto:san125@miami.edu" class="eboard-email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              san125@miami.edu
+            </a>
+          </div>
+        </div>
+
+        <div class="eboard-card">
+          <div class="eboard-avatar" aria-hidden="true">MC</div>
+          <div class="eboard-info">
+            <div class="eboard-name">Manuel de las Carreras</div>
+            <div class="eboard-role">Vice President</div>
+            <a href="mailto:mxd4463@miami.edu" class="eboard-email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              mxd4463@miami.edu
+            </a>
+          </div>
+        </div>
+
+        <div class="eboard-card">
+          <div class="eboard-avatar" aria-hidden="true">LZ</div>
+          <div class="eboard-info">
+            <div class="eboard-name">Luke Zhou</div>
+            <div class="eboard-role">Treasurer</div>
+            <a href="mailto:lyz9@miami.edu" class="eboard-email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              lyz9@miami.edu
+            </a>
+          </div>
+        </div>
+
+        <div class="eboard-card">
+          <div class="eboard-avatar" aria-hidden="true">NG</div>
+          <div class="eboard-info">
+            <div class="eboard-name">Noah Gorfin</div>
+            <div class="eboard-role">Social Media Chair</div>
+            <a href="mailto:njg123@miami.edu" class="eboard-email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              njg123@miami.edu
+            </a>
+          </div>
+        </div>
+
+        <div class="eboard-card">
+          <div class="eboard-avatar" aria-hidden="true">DP</div>
+          <div class="eboard-info">
+            <div class="eboard-name">Daniel Pulido</div>
+            <div class="eboard-role">Merchandise Chair</div>
+            <a href="mailto:dap315@miami.edu" class="eboard-email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              dap315@miami.edu
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL -->
+  <section id="social" aria-labelledby="social-heading">
+    <div class="container">
+      <div class="instagram-card">
+        <div class="ig-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+        <h2 class="ig-handle" id="social-heading">@umiamisoccer</h2>
+        <p class="ig-copy">Follow us on Instagram for match highlights, behind-the-scenes content, and the latest news from the squad.</p>
+        <a href="https://instagram.com/umiamisoccer" target="_blank" rel="noopener noreferrer" class="btn-ig" aria-label="Follow @umiamisoccer on Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Follow on Instagram
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo-row">
+        <img src="logo.png" alt="UM Men's Soccer Logo" />
+        <span class="footer-brand">University of Miami Men's Soccer</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="#schedule">Schedule</a>
+        <a href="#team">Team</a>
+        <a href="#gallery">Gallery</a>
+        <a href="donate.html">Donate</a>
+        <a href="#contact">Contact</a>
+        <a href="https://instagram.com/umiamisoccer" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </nav>
+      <p class="footer-copy">&copy; 2025 University of Miami Men's Soccer Club. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Initials helper ── */
+    function initials(name) {
+      const p = name.trim().split(/\s+/);
+      return p.length === 1 ? p[0].slice(0,2).toUpperCase() : (p[0][0]+p[p.length-1][0]).toUpperCase();
+    }
+
+    /* ── Load players ── */
+    fetch('/data/players.json').then(r => r.json()).then(players => {
+      document.getElementById('playersGrid').innerHTML = players.map(p => `
+        <div class="player-card">
+          <div class="player-avatar" aria-hidden="true">${initials(p.name)}</div>
+          <div class="player-name">${p.name}</div>
+          <div class="player-position">${p.position}</div>
+        </div>
+      `).join('');
+    }).catch(() => {});
+
+    /* ── Load schedule ── */
+    fetch('/data/games.json').then(r => r.json()).then(games => {
+      document.getElementById('scheduleGrid').innerHTML = games.map(g => `
+        <div class="match-card">
+          <div class="match-top">
+            <div class="match-date-block">
+              <div class="match-date">${g.date}</div>
+              <div class="match-time">${g.time}</div>
+            </div>
+            <span class="match-tag ${g.location === 'away' ? 'away' : ''}">${g.location === 'away' ? 'Away' : 'Home'}</span>
+          </div>
+          <div class="match-vs-row">
+            <div class="match-team">
+              <img src="logo.png" alt="UM Men's Soccer" class="match-team-logo" />
+              <span class="match-team-name">Miami</span>
+            </div>
+            <span class="match-vs-label">vs</span>
+            <div class="match-team">
+              <img src="${g.logo}" alt="${g.opponent}" class="match-team-logo" style="background:transparent;border-radius:0;box-shadow:none;" />
+              <span class="match-team-name">${g.opponent}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }).catch(() => {});
+
+    /* ── Nav scroll ── */
+    const nav = document.getElementById('main-nav');
+    const hero = document.getElementById('home');
+
+    function updateNav() {
+      if (window.scrollY > hero.offsetHeight * 0.15) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+
+    /* ── Lightbox ── */
+    (function () {
+      const lb        = document.getElementById('lightbox');
+      const lbImg     = document.getElementById('lightbox-img');
+      const lbClose   = document.getElementById('lightbox-close');
+      const lbPrev    = document.getElementById('lightbox-prev');
+      const lbNext    = document.getElementById('lightbox-next');
+      const lbCounter = document.getElementById('lightbox-counter');
+
+      const PHOTOS = [
+        'DSC01553.jpg','DSC01564.jpg','DSC01575.jpg','DSC01577.jpg',
+        'DSC01580.jpg','DSC01582.jpg','DSC01583.jpg','DSC01588.jpg',
+        'DSC01593.jpg','DSC01608.jpg','DSC01612.jpg','DSC01617.jpg','DSC01629.jpg'
+      ];
+
+      let current = 0;
+
+      function show(idx) {
+        current = idx;
+        lbImg.src = PHOTOS[current];
+        lbImg.alt = 'UM Men\'s Soccer photo ' + (current + 1);
+        lbCounter.textContent = (current + 1) + ' / ' + PHOTOS.length;
+        lbPrev.disabled = current === 0;
+        lbNext.disabled = current === PHOTOS.length - 1;
+      }
+
+      function open(idx) {
+        show(idx);
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function close() {
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+      }
+
+      lbClose.addEventListener('click', close);
+      lbPrev.addEventListener('click', () => { if (current > 0) show(current - 1); });
+      lbNext.addEventListener('click', () => { if (current < PHOTOS.length - 1) show(current + 1); });
+      lb.addEventListener('click', e => { if (e.target === lb || e.target === lbImg) close(); });
+      document.addEventListener('keydown', e => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape')     close();
+        if (e.key === 'ArrowLeft')  { if (current > 0) show(current - 1); }
+        if (e.key === 'ArrowRight') { if (current < PHOTOS.length - 1) show(current + 1); }
+      });
+
+      document.getElementById('gallery').addEventListener('click', e => {
+        const card = e.target.closest('.gallery-card');
+        if (!card) return;
+        const img  = card.querySelector('img');
+        if (!img)  return;
+        const src  = img.src.split('/').pop();
+        const idx  = PHOTOS.indexOf(src);
+        open(idx >= 0 ? idx : 0);
+      });
+    })();
+
+    /* ── Gallery carousel ── */
+    (function () {
+      const track    = document.getElementById('galleryTrack');
+      const prevBtn  = document.getElementById('galleryPrev');
+      const nextBtn  = document.getElementById('galleryNext');
+      const dotsWrap = document.getElementById('galleryDots');
+      const slides   = Array.from(track.children);
+      const total    = slides.length;
+      let current    = 0;
+      let animating  = false;
+
+      function cpv() {
+        if (window.innerWidth < 480) return 1;
+        if (window.innerWidth < 768) return 2;
+        return 3;
+      }
+
+      function render() {
+        const n   = cpv();
+        const pct = 100 / total;          // each slide as % of full track
+        // Track is full-width; slides sit inside it; we translateX to navigate
+        track.style.width      = '100%';
+        track.style.transition = 'none';
+        track.style.transform  = `translateX(-${current * (100 / n)}%)`;
+        slides.forEach(s => { s.style.width = (100 / n) + '%'; });
+        updateButtons();
+        updateDots();
+      }
+
+      function buildDots() {
+        dotsWrap.innerHTML = '';
+        const pages = total - cpv() + 1;
+        for (let i = 0; i < pages; i++) {
+          const d = document.createElement('button');
+          d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+          d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+          d.addEventListener('click', () => goTo(i));
+          dotsWrap.appendChild(d);
+        }
+      }
+
+      function updateDots() {
+        Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      function updateButtons() {
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current >= total - cpv();
+      }
+
+      function goTo(idx) {
+        if (animating) return;
+        idx = Math.max(0, Math.min(idx, total - cpv()));
+        if (idx === current) return;
+        animating = true;
+        current   = idx;
+
+        const n = cpv();
+        track.style.transition = 'transform 500ms ease';
+        track.style.transform  = `translateX(-${current * (100 / n)}%)`;
+
+        setTimeout(() => {
+          animating = false;
+          updateButtons();
+          updateDots();
+        }, 520);
+      }
+
+      prevBtn.addEventListener('click', () => goTo(current - 1));
+      nextBtn.addEventListener('click', () => goTo(current + 1));
+
+      function init() {
+        current   = 0;
+        animating = false;
+        const n   = cpv();
+        slides.forEach(s => { s.style.width = (100 / n) + '%'; });
+        track.style.display    = 'flex';
+        track.style.width      = '100%';
+        track.style.transition = 'none';
+        track.style.transform  = 'translateX(0)';
+        buildDots();
+        updateButtons();
+      }
+
+      init();
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(init, 150);
+      });
+    })();
+  </script>
+
+</body>
+</html>
