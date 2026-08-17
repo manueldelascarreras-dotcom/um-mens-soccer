@@ -1384,30 +1384,45 @@
       return p.length === 1 ? p[0].slice(0,2).toUpperCase() : (p[0][0]+p[p.length-1][0]).toUpperCase();
     }
 
-    /* ── Firestore REST helper (no SDK, public reads) ── */
-    const FS = 'https://firestore.googleapis.com/v1/projects/um-soccer/databases/(default)/documents';
+    /* ── Embedded fallback data (always available) ── */
+    const DEFAULT_PLAYERS = [
+      { name: "Sebastian Navarro",      position: "President" },
+      { name: "Manuel de las Carreras", position: "Vice President" },
+      { name: "Luke Zhou",              position: "Treasurer" },
+      { name: "Noah Gorfin",            position: "Social Media" },
+      { name: "Daniel Pulido",          position: "Merchandise Chair" },
+      { name: "Anthony Kozuch",         position: "Player" },
+      { name: "Aiden Abergel",          position: "Player" },
+      { name: "Brady Devine",           position: "Player" },
+      { name: "Cristian Azcona",        position: "Player" },
+      { name: "Cyrus",                  position: "Player" },
+      { name: "Eli",                    position: "Player" },
+      { name: "Felipe Grandi",          position: "Player" },
+      { name: "Franco",                 position: "Player" },
+      { name: "Hugo",                   position: "Player" },
+      { name: "Jake Kafrissen",         position: "Player" },
+      { name: "Joey Thompson",          position: "Player" },
+      { name: "Jorge Samudio",          position: "Player" },
+      { name: "Julian Rojas",           position: "Player" },
+      { name: "Marley",                 position: "Player" },
+      { name: "Matt",                   position: "Player" },
+      { name: "Matt Cianciulli",        position: "Player" },
+      { name: "Nathaniel",              position: "Player" },
+      { name: "Tarek",                  position: "Player" },
+      { name: "Victor L",               position: "Player" },
+      { name: "Zach",                   position: "Player" }
+    ];
 
-    function fsVal(v) {
-      if (!v) return '';
-      if (v.stringValue  !== undefined) return v.stringValue;
-      if (v.integerValue !== undefined) return Number(v.integerValue);
-      if (v.doubleValue  !== undefined) return v.doubleValue;
-      if (v.booleanValue !== undefined) return v.booleanValue;
-      return '';
-    }
-
-    function fsDocs(snap) {
-      if (!snap.documents) return [];
-      return snap.documents
-        .map(d => {
-          const out = { _id: d.name.split('/').pop() };
-          for (const [k, v] of Object.entries(d.fields || {})) out[k] = fsVal(v);
-          return out;
-        })
-        .sort((a, b) => (a.order || 0) - (b.order || 0));
-    }
+    const DEFAULT_GAMES = [
+      { date: "Friday, Sept 19",   time: "12:00 PM", location: "away", opponent: "FAU Owls",    logo: "/images/FAU.png" },
+      { date: "Saturday, Sept 20", time: "12:00 PM", location: "away", opponent: "FIU Panthers", logo: "/images/FIU.png" },
+      { date: "Friday, Oct 3",     time: "12:00 PM", location: "home", opponent: "FGCU Eagles",  logo: "/images/FGCU.png" },
+      { date: "Saturday, Oct 11",  time: "2:00 PM",  location: "away", opponent: "UCF Knights",  logo: "/images/UCF.png" },
+      { date: "Friday, Oct 17",    time: "11:00 AM", location: "home", opponent: "NSU Sharks",   logo: "/images/NSU.png" }
+    ];
 
     function renderPlayers(players) {
+      if (!players || !players.length) return;
       document.getElementById('playersGrid').innerHTML = players.map(p => `
         <div class="player-card">
           <div class="player-avatar" aria-hidden="true">${initials(p.name)}</div>
@@ -1418,6 +1433,7 @@
     }
 
     function renderGames(games) {
+      if (!games || !games.length) return;
       document.getElementById('scheduleGrid').innerHTML = games.map(g => `
         <div class="match-card">
           <div class="match-top">
@@ -1442,25 +1458,42 @@
       `).join('');
     }
 
-    /* ── Load players: Firestore → JSON fallback ── */
+    /* ── Render defaults immediately ── */
+    renderPlayers(DEFAULT_PLAYERS);
+    renderGames(DEFAULT_GAMES);
+
+    /* ── Firestore REST helper — overrides defaults when data exists ── */
+    const FS = 'https://firestore.googleapis.com/v1/projects/um-soccer/databases/(default)/documents';
+
+    function fsVal(v) {
+      if (!v) return '';
+      if (v.stringValue  !== undefined) return v.stringValue;
+      if (v.integerValue !== undefined) return Number(v.integerValue);
+      if (v.doubleValue  !== undefined) return v.doubleValue;
+      if (v.booleanValue !== undefined) return v.booleanValue;
+      return '';
+    }
+
+    function fsDocs(snap) {
+      if (!snap || !snap.documents) return [];
+      return snap.documents
+        .map(d => {
+          const out = { _id: d.name.split('/').pop() };
+          for (const [k, v] of Object.entries(d.fields || {})) out[k] = fsVal(v);
+          return out;
+        })
+        .sort((a, b) => (a.order || 0) - (b.order || 0));
+    }
+
     fetch(`${FS}/players?pageSize=100`)
       .then(r => r.json())
-      .then(snap => {
-        const players = fsDocs(snap);
-        if (players.length) { renderPlayers(players); return; }
-        throw new Error('empty');
-      })
-      .catch(() => fetch('/data/players.json').then(r => r.json()).then(renderPlayers).catch(() => {}));
+      .then(snap => { const d = fsDocs(snap); if (d.length) renderPlayers(d); })
+      .catch(() => {});
 
-    /* ── Load schedule: Firestore → JSON fallback ── */
     fetch(`${FS}/games?pageSize=50`)
       .then(r => r.json())
-      .then(snap => {
-        const games = fsDocs(snap);
-        if (games.length) { renderGames(games); return; }
-        throw new Error('empty');
-      })
-      .catch(() => fetch('/data/games.json').then(r => r.json()).then(renderGames).catch(() => {}));
+      .then(snap => { const d = fsDocs(snap); if (d.length) renderGames(d); })
+      .catch(() => {});
 
     /* ── Nav scroll ── */
     const nav = document.getElementById('main-nav');
