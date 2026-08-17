@@ -1163,91 +1163,91 @@
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01553.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01553.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01564.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01564.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01575.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01575.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01577.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01577.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01580.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01580.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01582.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01582.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01583.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01583.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01588.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01588.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01593.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01593.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01608.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01608.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01612.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01612.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01617.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01617.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
 
             <div class="carousel-slide">
               <div class="gallery-card">
-                <img src="DSC01629.jpg" alt="UM Men's Soccer" loading="lazy" />
+                <img src="/images/DSC01629.jpg" alt="UM Men's Soccer" loading="lazy" />
                 <div class="gallery-card-overlay"><span>UM Men's Soccer</span></div>
               </div>
             </div>
@@ -1487,9 +1487,9 @@
       const lbCounter = document.getElementById('lightbox-counter');
 
       const PHOTOS = [
-        'DSC01553.jpg','DSC01564.jpg','DSC01575.jpg','DSC01577.jpg',
-        'DSC01580.jpg','DSC01582.jpg','DSC01583.jpg','DSC01588.jpg',
-        'DSC01593.jpg','DSC01608.jpg','DSC01612.jpg','DSC01617.jpg','DSC01629.jpg'
+        '/images/DSC01553.jpg','/images/DSC01564.jpg','/images/DSC01575.jpg','/images/DSC01577.jpg',
+        '/images/DSC01580.jpg','/images/DSC01582.jpg','/images/DSC01583.jpg','/images/DSC01588.jpg',
+        '/images/DSC01593.jpg','/images/DSC01608.jpg','/images/DSC01612.jpg','/images/DSC01617.jpg','/images/DSC01629.jpg'
       ];
 
       let current = 0;
@@ -1531,7 +1531,7 @@
         if (!card) return;
         const img  = card.querySelector('img');
         if (!img)  return;
-        const src  = img.src.split('/').pop();
+        const src  = '/images/' + img.src.split('/').pop();
         const idx  = PHOTOS.indexOf(src);
         open(idx >= 0 ? idx : 0);
       });

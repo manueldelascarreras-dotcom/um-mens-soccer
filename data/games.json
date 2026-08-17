@@ -5,7 +5,7 @@
     "time": "12:00 PM",
     "location": "away",
     "opponent": "FAU Owls",
-    "logo": "images/FAU.png"
+    "logo": "/images/FAU.png"
   },
   {
     "id": "2",
@@ -13,7 +13,7 @@
     "time": "12:00 PM",
     "location": "away",
     "opponent": "FIU Panthers",
-    "logo": "images/FIU.png"
+    "logo": "/images/FIU.png"
   },
   {
     "id": "3",
@@ -21,7 +21,7 @@
     "time": "12:00 PM",
     "location": "home",
     "opponent": "FGCU Eagles",
-    "logo": "images/FGCU.png"
+    "logo": "/images/FGCU.png"
   },
   {
     "id": "4",
@@ -29,7 +29,7 @@
     "time": "2:00 PM",
     "location": "away",
     "opponent": "UCF Knights",
-    "logo": "images/UCF.png"
+    "logo": "/images/UCF.png"
   },
   {
     "id": "5",
@@ -37,6 +37,6 @@
     "time": "11:00 AM",
     "location": "home",
     "opponent": "NSU Sharks",
-    "logo": "images/NSU.png"
+    "logo": "/images/NSU.png"
   }
 ]
