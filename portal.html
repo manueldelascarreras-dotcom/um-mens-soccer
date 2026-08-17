@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Portal — UM Men's Soccer</title>
+  <meta name="robots" content="noindex, nofollow">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --green: #1a3c2a;
+      --green-dark: #12291c;
+      --green-mid: #2a5a3e;
+      --green-light: #3a7a55;
+      --cream: #f5f0e8;
+      --cream-dark: #ede7d9;
+      --gold: #c9a84c;
+      --gold-light: #e4c97e;
+      --red: #c0392b;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #e0d8cc;
+      --sidebar-w: 240px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Screens ───────────────────────────────────────── */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: flex; }
+
+    /* ── Login ─────────────────────────────────────────── */
+    #screen-login {
+      align-items: center;
+      justify-content: center;
+      background: var(--green-dark);
+      background-image:
+        radial-gradient(ellipse at 30% 50%, rgba(58,122,85,.28) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 20%, rgba(201,168,76,.1) 0%, transparent 50%);
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 24px 80px rgba(0,0,0,.4);
+    }
+    .login-logo {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      object-fit: contain;
+      margin: 0 auto 20px;
+      display: block;
+      background: var(--cream);
+      padding: 6px;
+    }
+    .login-title { font-size: 1.25rem; font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
+    .login-sub   { font-size: .85rem; color: var(--text-muted); margin-bottom: 32px; }
+    .btn-google {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      width: 100%; padding: 12px 20px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      background: #fff; font-size: .9rem; font-weight: 500; color: var(--text);
+      cursor: pointer;
+      transition: background .2s, border-color .2s, box-shadow .2s;
+    }
+    .btn-google:hover { background: var(--cream); border-color: var(--green); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .login-note { font-size: .75rem; color: var(--text-muted); margin-top: 20px; }
+
+    /* ── Denied ────────────────────────────────────────── */
+    #screen-denied {
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; text-align: center;
+      background: var(--green-dark); color: var(--cream); padding: 40px;
+    }
+    .denied-icon  { font-size: 3rem; }
+    .denied-title { font-size: 1.5rem; font-weight: 700; }
+    .denied-sub   { font-size: .9rem; opacity: .65; }
+
+    /* ── Admin panel ───────────────────────────────────── */
+    #screen-admin { flex-direction: row; }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--green-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      overflow-y: auto;
+    }
+    .sidebar-header { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .sidebar-logo img { width: 36px; height: 36px; border-radius: 50%; background: #fff; flex-shrink: 0; }
+    .sidebar-logo-text { font-size: .85rem; font-weight: 600; color: var(--cream); line-height: 1.3; }
+    .sidebar-logo-sub  { font-size: .68rem; color: var(--gold); font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+
+    .user-badge {
+      background: rgba(255,255,255,.07);
+      border-radius: 8px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .user-avatar-init {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gold); color: var(--green-dark);
+      font-size: .75rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .user-name  { font-size: .8rem; font-weight: 600; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-email { font-size: .68rem; color: rgba(245,240,232,.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .sidebar-nav { flex: 1; padding: 16px 12px; }
+    .nav-section-label {
+      font-size: .65rem; font-weight: 700;
+      color: rgba(245,240,232,.4);
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 8px 8px 4px; margin-top: 8px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 8px; cursor: pointer;
+      color: rgba(245,240,232,.65);
+      font-size: .875rem; font-weight: 500;
+      transition: background .15s, color .15s;
+      margin-bottom: 2px;
+      border: none; background: none; width: 100%; text-align: left;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.07); color: var(--cream); }
+    .nav-item.active { background: rgba(201,168,76,.15); color: var(--gold-light); }
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    .sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,.08); }
+    .btn-signout {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 9px 12px; border-radius: 8px;
+      border: none; background: rgba(192,57,43,.15); color: #e88b82;
+      font-size: .85rem; font-weight: 500; cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-signout:hover { background: rgba(192,57,43,.28); }
+
+    .main-content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    .main-header {
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .main-title { font-size: 1.2rem; font-weight: 700; color: var(--green-dark); }
+    .main-sub   { font-size: .8rem; color: var(--text-muted); margin-top: 2px; }
+
+    .btn-add {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 18px; background: var(--green); color: var(--cream);
+      border: none; border-radius: 8px; font-size: .875rem; font-weight: 600;
+      cursor: pointer; transition: background .2s, transform .15s;
+    }
+    .btn-add:hover { background: var(--green-mid); transform: translateY(-1px); }
+
+    .tab-content { display: none; flex: 1; }
+    .tab-content.active { display: block; }
+    .tab-inner { padding: 28px 32px; }
+
+    .data-table-wrap { background: #fff; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      background: var(--cream-dark); padding: 11px 16px;
+      text-align: left; font-size: .72rem; font-weight: 700;
+      color: var(--green-dark); letter-spacing: .06em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td { padding: 11px 16px; font-size: .875rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(26,60,42,.025); }
+
+    .table-actions { display: flex; gap: 8px; }
+    .btn-edit, .btn-del {
+      padding: 5px 11px; border-radius: 6px; border: none;
+      font-size: .78rem; font-weight: 500; cursor: pointer; transition: background .15s;
+    }
+    .btn-edit { background: rgba(26,60,42,.1); color: var(--green-dark); }
+    .btn-edit:hover { background: rgba(26,60,42,.18); }
+    .btn-del  { background: rgba(192,57,43,.1); color: var(--red); }
+    .btn-del:hover  { background: rgba(192,57,43,.2); }
+
+    .badge-home { background: rgba(26,60,42,.12); color: var(--green-dark); padding: 2px 8px; border-radius: 20px; font-size: .73rem; font-weight: 600; }
+    .badge-away { background: rgba(201,168,76,.18); color: #7a5d10; padding: 2px 8px; border-radius: 20px; font-size: .73rem; font-weight: 600; }
+    .badge-owner { background: rgba(201,168,76,.2); color: #6a520e; padding: 2px 7px; border-radius: 20px; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+    .empty-icon  { font-size: 2.5rem; margin-bottom: 12px; }
+    .empty-text  { font-size: .9rem; }
+
+    .import-banner {
+      background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.3);
+      border-radius: 10px; padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      margin-bottom: 20px;
+    }
+    .import-text { font-size: .875rem; color: #6a520e; }
+    .import-text strong { font-weight: 600; }
+    .btn-import {
+      padding: 7px 16px; background: var(--gold); color: #fff;
+      border: none; border-radius: 6px; font-size: .8rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: background .2s;
+    }
+    .btn-import:hover { background: #b8923c; }
+
+    /* ── Modal ─────────────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 14px; width: 100%; max-width: 460px; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
+    .modal-head {
+      background: var(--green-dark); padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-head h3 { font-size: 1rem; font-weight: 700; color: var(--cream); }
+    .modal-close { background: none; border: none; color: rgba(245,240,232,.6); font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 0 2px; }
+    .modal-close:hover { color: var(--cream); }
+    .modal-body { padding: 24px; }
+    .modal-foot { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: .78rem; font-weight: 600; color: var(--green-dark); margin-bottom: 6px; letter-spacing: .02em; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: .9rem; color: var(--text); background: #fff;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,60,42,.1); }
+    .form-hint { font-size: .72rem; color: var(--text-muted); margin-top: 4px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .btn-cancel { padding: 9px 18px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; font-size: .875rem; font-weight: 500; cursor: pointer; color: var(--text); transition: background .15s; }
+    .btn-cancel:hover { background: var(--cream); }
+    .btn-save   { padding: 9px 22px; background: var(--green); color: var(--cream); border: none; border-radius: 8px; font-size: .875rem; font-weight: 600; cursor: pointer; transition: background .2s; }
+    .btn-save:hover { background: var(--green-mid); }
+    .btn-save:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* ── Toast ─────────────────────────────────────────── */
+    .toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+    .toast {
+      background: var(--green-dark); color: var(--cream);
+      padding: 12px 18px; border-radius: 8px;
+      font-size: .875rem; font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+      animation: toastIn .3s ease; max-width: 300px;
+    }
+    .toast.err { background: var(--red); }
+    @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    @media (max-width: 768px) {
+      .sidebar { width: 56px; }
+      .sidebar-logo-text, .sidebar-logo-sub, .nav-section-label, .user-badge, .sidebar-footer .btn-signout span:last-child { display: none; }
+      .sidebar-logo { justify-content: center; }
+      .nav-item { justify-content: center; padding: 10px; }
+      .nav-icon { width: auto; }
+      .main-content { margin-left: 56px; }
+      .main-header { padding: 16px; flex-wrap: wrap; gap: 10px; }
+      .tab-inner { padding: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ──────────────────────────────────────────── -->
+<div id="screen-login" class="screen active">
+  <div class="login-card">
+    <img src="logo.png" alt="UM Men's Soccer" class="login-logo">
+    <div class="login-title">Staff Portal</div>
+    <div class="login-sub">UM Men's Soccer — Admin Access Only</div>
+    <button class="btn-google" onclick="signIn()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908C16.658 14.015 17.64 11.707 17.64 9.2z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+        <path fill="#FBBC05" d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.962L3.964 6.294C4.672 4.167 6.656 3.58 9 3.58z"/>
+      </svg>
+      Sign in with Google
+    </button>
+    <div class="login-note">Access is restricted to authorized staff only.</div>
+  </div>
+</div>
+
+<!-- ── DENIED ─────────────────────────────────────────── -->
+<div id="screen-denied" class="screen">
+  <div class="denied-icon">🔒</div>
+  <div class="denied-title">Access Denied</div>
+  <div class="denied-sub" id="denied-email-txt"></div>
+  <div class="denied-sub">This account is not authorized. Contact the portal owner.</div>
+  <button class="btn-signout" style="margin-top:24px;width:auto;padding:10px 24px;border-radius:8px" onclick="signOut()">Sign out &amp; try another account</button>
+</div>
+
+<!-- ── ADMIN PANEL ────────────────────────────────────── -->
+<div id="screen-admin" class="screen">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <img src="logo.png" alt="UM Soccer">
+        <div>
+          <div class="sidebar-logo-text">UM Men's Soccer</div>
+          <div class="sidebar-logo-sub">Staff Portal</div>
+        </div>
+      </div>
+      <div class="user-badge">
+        <div class="user-avatar-init" id="u-init"></div>
+        <div style="overflow:hidden;min-width:0">
+          <div class="user-name"  id="u-name"></div>
+          <div class="user-email" id="u-email"></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">CMS</div>
+      <button class="nav-item active" onclick="switchTab('players',this)"><span class="nav-icon">⚽</span> Players</button>
+      <button class="nav-item"        onclick="switchTab('games',this)">  <span class="nav-icon">📅</span> Games</button>
+      <button class="nav-item"        onclick="switchTab('alumni',this)"> <span class="nav-icon">🎓</span> Alumni</button>
+      <div class="nav-section-label">Settings</div>
+      <button class="nav-item"        onclick="switchTab('admins',this)"> <span class="nav-icon">🔑</span> Admins</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-signout" onclick="signOut()"><span>↩</span> <span>Sign out</span></button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+
+    <!-- PLAYERS TAB -->
+    <div id="tab-players" class="tab-content active">
+      <div class="main-header">
+        <div><div class="main-title">Players</div><div class="main-sub">Manage the team roster</div></div>
+        <button class="btn-add" onclick="openModal('player')">+ Add Player</button>
+      </div>
+      <div class="tab-inner">
+        <div id="players-banner" class="import-banner" style="display:none">
+          <div class="import-text"><strong>No players in Firestore yet.</strong> Import from the site's existing JSON file to get started.</div>
+          <button class="btn-import" onclick="importJSON('players')">Import from JSON</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Name</th><th>Position / Role</th><th>Actions</th></tr></thead>
+            <tbody id="players-body"><tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAMES TAB -->
+    <div id="tab-games" class="tab-content">
+      <div class="main-header">
+        <div><div class="main-title">Games</div><div class="main-sub">Manage the schedule</div></div>
+        <button class="btn-add" onclick="openModal('game')">+ Add Game</button>
+      </div>
+      <div class="tab-inner">
+        <div id="games-banner" class="import-banner" style="display:none">
+          <div class="import-text"><strong>No games in Firestore yet.</strong> Import from the site's existing JSON file to get started.</div>
+          <button class="btn-import" onclick="importJSON('games')">Import from JSON</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Date &amp; Time</th><th>Opponent</th><th>Location</th><th>Logo File</th><th>Actions</th></tr></thead>
+            <tbody id="games-body"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALUMNI TAB -->
+    <div id="tab-alumni" class="tab-content">
+      <div class="main-header">
+        <div><div class="main-title">Alumni</div><div class="main-sub">Manage the alumni directory</div></div>
+        <button class="btn-add" onclick="openModal('alumni')">+ Add Alumni</button>
+      </div>
+      <div class="tab-inner">
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Grad Year</th><th>Position / Role</th><th>Actions</th></tr></thead>
+            <tbody id="alumni-body"><tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMINS TAB -->
+    <div id="tab-admins" class="tab-content">
+      <div class="main-header">
+        <div><div class="main-title">Admins</div><div class="main-sub">Control who can access this portal</div></div>
+        <button class="btn-add" onclick="openModal('admin')">+ Add Admin</button>
+      </div>
+      <div class="tab-inner">
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Name &amp; Email</th><th>Added By</th><th>Actions</th></tr></thead>
+            <tbody id="admins-body"><tr><td colspan="3" style="text-align:center;padding:32px;color:var(--text-muted)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /screen-admin -->
+
+<!-- ── MODAL ──────────────────────────────────────────── -->
+<div id="modal-overlay" class="modal-overlay" onclick="backdropClose(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">Add</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save"   id="btn-save" onclick="saveEntity()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOASTS ─────────────────────────────────────────── -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+// ── Firebase init ──────────────────────────────────────
+firebase.initializeApp({
+  apiKey:            "AIzaSyAieDwi_WtxHRP8-jnyGhcBiulC0h2fBnQ",
+  authDomain:        "um-soccer.firebaseapp.com",
+  projectId:         "um-soccer",
+  storageBucket:     "um-soccer.firebasestorage.app",
+  messagingSenderId: "457657358540",
+  appId:             "1:457657358540:web:c1ab47b3900d5ae53e0a69"
+});
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+const OWNER = 'manudelascarreras@gmail.com';
+
+// ── Screen helpers ─────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+// ── Auth flow ──────────────────────────────────────────
+auth.onAuthStateChanged(async user => {
+  if (!user) { show('login'); return; }
+
+  const ref  = db.collection('admins').doc(user.email);
+  const snap = await ref.get().catch(() => null);
+
+  if (!snap || !snap.exists) {
+    if (user.email === OWNER) {
+      // Bootstrap first admin
+      await ref.set({ name: user.displayName || user.email, email: user.email, addedBy: 'owner', addedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      initPanel(user);
+    } else {
+      document.getElementById('denied-email-txt').textContent = user.email;
+      show('denied');
+    }
+    return;
+  }
+  initPanel(user);
+});
+
+function signIn() {
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => toast(e.message, true));
+}
+function signOut() { auth.signOut(); }
+
+// ── Panel init ─────────────────────────────────────────
+function initPanel(user) {
+  const init = (user.displayName || user.email).split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('u-init').textContent  = init;
+  document.getElementById('u-name').textContent  = user.displayName || user.email;
+  document.getElementById('u-email').textContent = user.email;
+  show('admin');
+  loadPlayers(); loadGames(); loadAlumni(); loadAdmins();
+}
+
+// ── Tab switch ─────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Caches ─────────────────────────────────────────────
+let PC = [], GC = [], AC = [], ADC = [];
+
+// ── Players ────────────────────────────────────────────
+async function loadPlayers() {
+  const tbody = document.getElementById('players-body');
+  let snap;
+  try { snap = await db.collection('players').orderBy('order').get(); }
+  catch { snap = await db.collection('players').get(); }
+
+  if (snap.empty) {
+    document.getElementById('players-banner').style.display = 'flex';
+    tbody.innerHTML = emptyRow(4, '⚽', 'No players yet. Import from JSON or add one.');
+    return;
+  }
+  document.getElementById('players-banner').style.display = 'none';
+  PC = snap.docs.map(d => ({id: d.id, ...d.data()}));
+  tbody.innerHTML = PC.map((p, i) => `
+    <tr>
+      <td style="color:var(--text-muted);font-size:.8rem">${i+1}</td>
+      <td><strong>${esc(p.name)}</strong></td>
+      <td>${esc(p.position)}</td>
+      <td><div class="table-actions">
+        <button class="btn-edit" onclick="openModal('player','${p.id}')">Edit</button>
+        <button class="btn-del"  onclick="del('players','${p.id}',loadPlayers)">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── Games ──────────────────────────────────────────────
+async function loadGames() {
+  const tbody = document.getElementById('games-body');
+  let snap;
+  try { snap = await db.collection('games').orderBy('order').get(); }
+  catch { snap = await db.collection('games').get(); }
+
+  if (snap.empty) {
+    document.getElementById('games-banner').style.display = 'flex';
+    tbody.innerHTML = emptyRow(5, '📅', 'No games yet. Import from JSON or add one.');
+    return;
+  }
+  document.getElementById('games-banner').style.display = 'none';
+  GC = snap.docs.map(d => ({id: d.id, ...d.data()}));
+  tbody.innerHTML = GC.map(g => `
+    <tr>
+      <td><strong>${esc(g.date)}</strong><div style="font-size:.78rem;color:var(--text-muted)">${esc(g.time)}</div></td>
+      <td><strong>${esc(g.opponent)}</strong></td>
+      <td><span class="badge-${g.location==='away'?'away':'home'}">${g.location==='away'?'Away':'Home'}</span></td>
+      <td style="font-size:.78rem;color:var(--text-muted)">${esc(g.logo)}</td>
+      <td><div class="table-actions">
+        <button class="btn-edit" onclick="openModal('game','${g.id}')">Edit</button>
+        <button class="btn-del"  onclick="del('games','${g.id}',loadGames)">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── Alumni ─────────────────────────────────────────────
+async function loadAlumni() {
+  const tbody = document.getElementById('alumni-body');
+  let snap;
+  try { snap = await db.collection('alumni').orderBy('order').get(); }
+  catch { snap = await db.collection('alumni').get(); }
+
+  if (snap.empty) {
+    tbody.innerHTML = emptyRow(4, '🎓', 'No alumni yet. Add the first one!');
+    return;
+  }
+  AC = snap.docs.map(d => ({id: d.id, ...d.data()}));
+  tbody.innerHTML = AC.map(a => `
+    <tr>
+      <td><strong>${esc(a.name)}</strong></td>
+      <td>${esc(a.year||'—')}</td>
+      <td>${esc(a.position||'—')}</td>
+      <td><div class="table-actions">
+        <button class="btn-edit" onclick="openModal('alumni','${a.id}')">Edit</button>
+        <button class="btn-del"  onclick="del('alumni','${a.id}',loadAlumni)">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── Admins ─────────────────────────────────────────────
+async function loadAdmins() {
+  const tbody = document.getElementById('admins-body');
+  const me = auth.currentUser.email;
+  const snap = await db.collection('admins').get();
+  ADC = snap.docs.map(d => ({id: d.id, ...d.data()}));
+  tbody.innerHTML = ADC.map(a => `
+    <tr>
+      <td>
+        <strong>${esc(a.name||a.email)}</strong>
+        <div style="font-size:.78rem;color:var(--text-muted)">${esc(a.email)}</div>
+        ${a.email===OWNER ? '<span class="badge-owner">Owner</span>' : ''}
+      </td>
+      <td style="font-size:.8rem;color:var(--text-muted)">${esc(a.addedBy||'—')}</td>
+      <td>${(a.email===OWNER||a.email===me) ? '<span style="font-size:.8rem;color:var(--text-muted)">—</span>' :
+        `<button class="btn-del" onclick="delAdmin('${a.email}')">Remove</button>`}</td>
+    </tr>`).join('');
+}
+
+async function delAdmin(email) {
+  if (!confirm(`Remove ${email} from admin access?`)) return;
+  await db.collection('admins').doc(email).delete();
+  toast('Admin removed');
+  loadAdmins();
+}
+
+// ── Modal ──────────────────────────────────────────────
+let mType = '', mId = '';
+
+const forms = {
+  player: d => `
+    <div class="form-group"><label>Full Name</label><input id="f-name" value="${esc(d.name||'')}"></div>
+    <div class="form-group"><label>Position / Role</label><input id="f-pos" value="${esc(d.position||'')}" placeholder="e.g. Player, President, Goalkeeper"></div>
+    <div class="form-group"><label>Display Order</label><input id="f-ord" type="number" value="${d.order??PC.length+1}"></div>`,
+
+  game: d => `
+    <div class="form-group"><label>Date</label><input id="f-date" value="${esc(d.date||'')}" placeholder="e.g. Friday, Oct 17"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Time</label><input id="f-time" value="${esc(d.time||'')}" placeholder="e.g. 11:00 AM"></div>
+      <div class="form-group"><label>Location</label>
+        <select id="f-loc"><option value="home" ${d.location==='home'?'selected':''}>Home</option><option value="away" ${d.location==='away'?'selected':''}>Away</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Opponent</label><input id="f-opp" value="${esc(d.opponent||'')}" placeholder="e.g. FAU Owls"></div>
+    <div class="form-group"><label>Logo Filename</label><input id="f-logo" value="${esc(d.logo||'')}" placeholder="e.g. FAU.png"><div class="form-hint">Must match a PNG file in the site root (FAU.png, FIU.png, etc.)</div></div>
+    <div class="form-group"><label>Display Order</label><input id="f-ord" type="number" value="${d.order??GC.length+1}"></div>`,
+
+  alumni: d => `
+    <div class="form-group"><label>Full Name</label><input id="f-name" value="${esc(d.name||'')}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Graduation Year</label><input id="f-year" value="${esc(d.year||'')}" placeholder="e.g. 2024"></div>
+      <div class="form-group"><label>Position / Role</label><input id="f-pos" value="${esc(d.position||'')}" placeholder="e.g. Forward"></div>
+    </div>
+    <div class="form-group"><label>Display Order</label><input id="f-ord" type="number" value="${d.order??AC.length+1}"></div>`,
+
+  admin: () => `
+    <div class="form-group"><label>Full Name</label><input id="f-name" placeholder="e.g. Luke Zhou"></div>
+    <div class="form-group"><label>Google / Gmail Address</label><input id="f-email" type="email" placeholder="e.g. lyz9@miami.edu"><div class="form-hint">Must be a Google account. They sign in with Google on this page.</div></div>`
+};
+
+function openModal(type, id='') {
+  mType = type; mId = id;
+  const labels = { player:'Player', game:'Game', alumni:'Alumni', admin:'Admin' };
+  document.getElementById('modal-title').textContent = (id?'Edit ':'Add ') + labels[type];
+  const caches = { player:PC, game:GC, alumni:AC };
+  const data = id && caches[type] ? (caches[type].find(x => x.id===id)||{}) : {};
+  document.getElementById('modal-body').innerHTML = forms[type](data);
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => { const f = document.querySelector('#modal-body input'); if(f) f.focus(); }, 50);
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); mType=''; mId=''; }
+function backdropClose(e) { if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+
+async function saveEntity() {
+  const user = auth.currentUser;
+  const btn = document.getElementById('btn-save');
+  let col, data, reload;
+
+  if (mType === 'admin') {
+    const name  = (document.getElementById('f-name').value||'').trim();
+    const email = (document.getElementById('f-email').value||'').trim().toLowerCase();
+    if (!email || !email.includes('@')) { toast('Enter a valid email', true); return; }
+    await db.collection('admins').doc(email).set({ name, email, addedBy: user.email, addedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    toast('Admin added — they can sign in now');
+    closeModal(); loadAdmins(); return;
+  }
+
+  if (mType === 'player') {
+    data = { name:(document.getElementById('f-name').value||'').trim(), position:(document.getElementById('f-pos').value||'').trim(), order:+document.getElementById('f-ord').value||0 };
+    if (!data.name) { toast('Name is required', true); return; }
+    col = 'players'; reload = loadPlayers;
+  } else if (mType === 'game') {
+    data = { date:(document.getElementById('f-date').value||'').trim(), time:(document.getElementById('f-time').value||'').trim(), location:document.getElementById('f-loc').value, opponent:(document.getElementById('f-opp').value||'').trim(), logo:(document.getElementById('f-logo').value||'').trim(), order:+document.getElementById('f-ord').value||0 };
+    if (!data.opponent) { toast('Opponent is required', true); return; }
+    col = 'games'; reload = loadGames;
+  } else if (mType === 'alumni') {
+    data = { name:(document.getElementById('f-name').value||'').trim(), year:(document.getElementById('f-year').value||'').trim(), position:(document.getElementById('f-pos').value||'').trim(), order:+document.getElementById('f-ord').value||0 };
+    if (!data.name) { toast('Name is required', true); return; }
+    col = 'alumni'; reload = loadAlumni;
+  }
+
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  try {
+    if (mId) { await db.collection(col).doc(mId).update(data); toast('Saved'); }
+    else      { await db.collection(col).add(data);            toast('Added'); }
+    closeModal(); reload();
+  } catch(e) { toast('Error: ' + e.message, true); }
+  finally { btn.textContent = 'Save'; btn.disabled = false; }
+}
+
+// ── Delete ─────────────────────────────────────────────
+async function del(col, id, reload) {
+  if (!confirm('Delete this entry? This cannot be undone.')) return;
+  await db.collection(col).doc(id).delete();
+  toast('Deleted'); reload();
+}
+
+// ── Import from JSON ───────────────────────────────────
+async function importJSON(type) {
+  const cfg = { players:{url:'/data/players.json',col:'players',reload:loadPlayers}, games:{url:'/data/games.json',col:'games',reload:loadGames} }[type];
+  if (!cfg) return;
+  try {
+    const items = await fetch(cfg.url).then(r => r.json());
+    const batch = db.batch();
+    items.forEach((item, i) => {
+      const { id: _id, ...data } = item;
+      batch.set(db.collection(cfg.col).doc(_id || String(i+1)), {...data, order:i});
+    });
+    await batch.commit();
+    toast(`Imported ${items.length} ${type} ✓`);
+    cfg.reload();
+  } catch(e) { toast('Import failed: ' + e.message, true); }
+}
+
+// ── Helpers ────────────────────────────────────────────
+function emptyRow(cols, icon, msg) {
+  return `<tr><td colspan="${cols}"><div class="empty-state"><div class="empty-icon">${icon}</div><div class="empty-text">${msg}</div></div></td></tr>`;
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function toast(msg, err=false) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (err?' err':'');
+  el.textContent = msg;
+  document.getElementById('toast-wrap').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+</script>
+</body>
+</html>

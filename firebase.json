@@ -8,8 +8,16 @@
       "node_modules/**",
       ".claude/**",
       ".gitignore",
-      "admin.html"
+      "admin.html",
+      "firestore.rules",
+      "firestore.indexes.json",
+      "data/**",
+      "seed-firestore.js"
     ],
     "cleanUrls": true
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }

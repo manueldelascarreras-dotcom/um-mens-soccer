@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
+    // Public: anyone can read players, games, alumni
+    match /players/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /games/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /alumni/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admins: only admins can manage; owner can always bootstrap themselves
+    match /admins/{email} {
+      allow read: if isAdmin() || request.auth.token.email == 'manudelascarreras@gmail.com';
+      allow create: if request.auth.token.email == 'manudelascarreras@gmail.com' || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+  }
+}
